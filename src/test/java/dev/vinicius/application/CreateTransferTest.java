@@ -51,5 +51,26 @@ public class CreateTransferTest {
         Assertions.assertEquals(1, transfers.size(), "More than one transfer was found, but only one should be present");
     }
 
+    @Test
+    void shouldBeThrowExceptionWhenPayerIdIsNull() {
+        var input = new Input(null, "payeeId", "description", 500.0);
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> createTransfer.execute(input));
+        Assertions.assertEquals("payerId is required", exception.getMessage());
+    }
+
+    @Test
+    void shouldBeThrowExceptionWhenPayeeIdIsNull() {
+        var input = new Input("payerId", null, "description", 500.0);
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> createTransfer.execute(input));
+        Assertions.assertEquals("payeeId is required", exception.getMessage());
+    }
+
+    @Test
+    void shouldBeThrowExceptionWhenAmountIsInvalid() {
+        var input = new Input("payerId", "payeeId", "description", -500.0);
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> createTransfer.execute(input));
+        Assertions.assertEquals("amount should be greater than zero", exception.getMessage());
+    }
+
 }
 
