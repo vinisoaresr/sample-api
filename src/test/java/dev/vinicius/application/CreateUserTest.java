@@ -1,13 +1,11 @@
-package dev.vinicius;
+package dev.vinicius.application;
 
-import dev.vinicius.application.CreateUser;
 import dev.vinicius.application.CreateUser.Input;
 import dev.vinicius.application.CreateUser.Output;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import dev.vinicius.application.UserRepository;
 import dev.vinicius.entity.User;
 import dev.vinicius.infra.exceptions.DocumentAlreadyExistsException;
 import dev.vinicius.infra.exceptions.EmailAlreadyExistsException;

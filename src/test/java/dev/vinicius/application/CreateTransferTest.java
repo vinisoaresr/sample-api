@@ -1,8 +1,6 @@
-package dev.vinicius;
+package dev.vinicius.application;
 
-import dev.vinicius.application.CreateTransfer;
 import dev.vinicius.application.CreateTransfer.Input;
-import dev.vinicius.application.TransferRepository;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
