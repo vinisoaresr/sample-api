@@ -1,0 +1,6 @@
+FROM maven:3.9.7-eclipse-temurin-21
+
+COPY . /workspace
+WORKDIR /workspace/
+
+CMD ["./gradlew", "quarkusDev", "-Dquarkus.live-reload.password=dev", "-Dquarkus.http.host=0.0.0.0", "-Dquarkus.http.port=${API_PORT}"]
