@@ -10,4 +10,6 @@ public interface UserRepository {
     User findByDocument(String document);
 
     User findByEmail(String email);
+
+    User findById(String userId);
 }

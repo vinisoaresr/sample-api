@@ -1,6 +1,7 @@
 package dev.vinicius.application;
 
 import dev.vinicius.application.CreateTransfer.Input;
+import dev.vinicius.infra.exceptions.*;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -15,6 +16,9 @@ public class CreateTransferTest {
     CreateTransfer createTransfer;
 
     @Inject
+    CreateUser createUser;
+
+    @Inject
     TransferRepository transferRepository;
 
     @BeforeEach
@@ -23,9 +27,25 @@ public class CreateTransferTest {
         transferRepository.removeAll();
     }
 
+    private String createShopkeeper() {
+        var shopkeeperInput = new CreateUser.Input("shopkeeper", "shopkeeper@shop.com", "123456789", "shopkeeper", "12345");
+        var output = createUser.execute(shopkeeperInput);
+        return output.userId();
+    }
+
+    private String createUser() {
+        String document = Integer.toString((int) (Math.random() * 1000000000));
+        String email = document + "@user.com";
+        var payerInput = new CreateUser.Input("whatever", email, document, "user", "12345");
+        var output = createUser.execute(payerInput);
+        return output.userId();
+    }
+
     @Test
     void shouldBeCreateTransfer() {
-        var input = new Input("payerId", "payeeId", "description", 500.0);
+        var payerId = createUser();
+        var payeeId = createUser();
+        var input = new Input(payerId, payeeId, "any description", 500.0);
         var output = createTransfer.execute(input);
 
         Assertions.assertNotNull(output, "Any output should be returned");
@@ -41,7 +61,9 @@ public class CreateTransferTest {
 
     @Test
     void shouldBeOnlyOneTransferCreated() {
-        var input = new Input("payerId", "payeeId", "description", 500.0);
+        var payerId = createUser();
+        var payeeId = createUser();
+        var input = new Input(payerId, payeeId, "any description", 500.0);
         var output = createTransfer.execute(input);
 
         var transfer = transferRepository.findTransferById(output.transferId());
@@ -53,24 +75,71 @@ public class CreateTransferTest {
 
     @Test
     void shouldBeThrowExceptionWhenPayerIdIsNull() {
-        var input = new Input(null, "payeeId", "description", 500.0);
+        var payeeId = createUser();
+        var input = new Input(null, payeeId, "any description", 500.0);
+
         Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> createTransfer.execute(input));
+
         Assertions.assertEquals("payerId is required", exception.getMessage());
     }
 
     @Test
     void shouldBeThrowExceptionWhenPayeeIdIsNull() {
-        var input = new Input("payerId", null, "description", 500.0);
+        var payerId = createUser();
+        var input = new Input(payerId, null, "any description", 500.0);
+
         Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> createTransfer.execute(input));
+
         Assertions.assertEquals("payeeId is required", exception.getMessage());
     }
 
     @Test
     void shouldBeThrowExceptionWhenAmountIsInvalid() {
-        var input = new Input("payerId", "payeeId", "description", -500.0);
+        var payerId = createUser();
+        var payeeId = createUser();
+        var input = new Input(payerId, payeeId, "any description", -500.0);
+
         Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> createTransfer.execute(input));
+
         Assertions.assertEquals("amount should be greater than zero", exception.getMessage());
     }
 
+    @Test
+    void shouldBeThrowUserNotFoundExceptionWhenPayerIdNotFound() {
+        var payeeId = createUser();
+        var input = new Input("invalid-id", payeeId, "any description", 500.0);
+
+        Exception exception = Assertions.assertThrows(UserNotFoundException.class, () -> createTransfer.execute(input));
+
+        Assertions.assertEquals("payer user not found", exception.getMessage());
+    }
+
+    @Test
+    void shouldBeThrowUserNotFoundExceptionWhenPayeeIdNotFound() {
+        var payerId = createUser();
+        var input = new Input(payerId, "invalid-id", "any description", 500.0);
+
+        Exception exception = Assertions.assertThrows(UserNotFoundException.class, () -> createTransfer.execute(input));
+
+        Assertions.assertEquals("payee user not found", exception.getMessage());
+    }
+
+    @Test
+    void shouldBeThrowExceptionWhenPayerIdIsShopkeeper() {
+        var payerId = createShopkeeper();
+        var payeeId = createUser();
+        var input = new Input(payerId, payeeId, "description", 500.0);
+
+        Exception exception = Assertions.assertThrows(UnauthorizedOperationException.class, () -> createTransfer.execute(input));
+
+        Assertions.assertEquals("shopkeeper can't allow to make transfers", exception.getMessage());
+    }
+
+    // TODO:
+    // verify if user has balance to make transfer
+    // verify if ExternalAuthorizationService is called with correct parameters
+    // verify if ExternalAuthorizationService is called once (mock)
+    // verify if transaction is rollbacked when ExternalAuthorizationService throws an exception
 }
+
 
