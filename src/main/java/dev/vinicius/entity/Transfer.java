@@ -9,7 +9,7 @@ import lombok.Getter;
 import java.util.Date;
 
 @Getter
-@Entity
+@Entity(name = "transfer")
 public class Transfer {
 
     @Id

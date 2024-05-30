@@ -28,17 +28,23 @@ class CreateUserTest {
 
     @Test
     void shouldBeCreateUser() {
-        Input input = new Input("Vinicius", "vini@teste.com",
-                "12345678901", "123456");
-        Output output = createUser.execute(input);
-        Assertions.assertNotNull(output.userId());
+        Input input = new Input(
+                "Vinicius",
+                "vini@teste.com",
+                "12345678901",
+                "user",
+                "123456");
 
+        Output output = createUser.execute(input);
         User user = userRepository.findByDocument(input.document());
+
+        Assertions.assertNotNull(output.userId());
         Assertions.assertNotNull(user);
         Assertions.assertNotNull(user.getUserId());
         Assertions.assertEquals(input.name(), user.getName());
         Assertions.assertEquals(input.email(), user.getEmail());
         Assertions.assertEquals(input.document(), user.getDocument());
+        Assertions.assertEquals(input.type(), user.getType().name().toLowerCase());
         Assertions.assertEquals(input.password(), user.getPassword());
     }
 
@@ -48,6 +54,7 @@ class CreateUserTest {
                 "Vinicius",
                 "vini@teste.com",
                 "same-document",
+                "user",
                 "123");
 
         Output output = createUser.execute(input);
@@ -58,6 +65,7 @@ class CreateUserTest {
                 "Carol",
                 "carol@teste.com",
                 "same-document",
+                "user",
                 "123");
 
         DocumentAlreadyExistsException exception = Assertions.assertThrows(
@@ -73,6 +81,7 @@ class CreateUserTest {
                 "Vinicius",
                 "vini@teste.com",
                 "same-document",
+                "user",
                 "123");
 
         Output output = createUser.execute(input);
@@ -83,6 +92,7 @@ class CreateUserTest {
                 "Carol",
                 "vini@teste.com",
                 "diff-document",
+                "user",
                 "123");
 
         EmailAlreadyExistsException exception = Assertions.assertThrows(

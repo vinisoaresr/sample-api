@@ -1,10 +1,6 @@
 package dev.vinicius.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
@@ -12,28 +8,37 @@ import lombok.Getter;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    String userId;
-    @Column
-    String name;
-    @Column
-    String email;
-    @Column
-    String password;
-    @Column
-    String document;
+    private String userId;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(unique = true, nullable = false)
+    private String document;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserType type;
 
     public User() {
     }
 
-    public User(String userId, String name, String email, String document, String password) {
+    public User(String userId, String name, String email, String document, String password, String type) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.document = document;
         this.password = password;
+        this.type = UserType.valueOf(type.toUpperCase());
     }
 
-    public static User create(String name, String email, String document, String password) {
-        return new User(null, name, email, document, password);
+    public static User create(String name, String email, String document, String password, String type) {
+        return new User(null, name, email, document, password, type);
     }
 }

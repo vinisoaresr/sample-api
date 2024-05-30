@@ -35,13 +35,20 @@ public class CreateUser {
                 input.name(),
                 input.email(),
                 input.document(),
-                input.password());
+                input.password(),
+                input.type()
+        );
 
         userRepository.save(user);
         return new Output(user.getUserId());
     }
 
-    public record Input(String name, String email, String document, String password) {
+    public record Input(
+            String name,
+            String email,
+            String document,
+            String type,
+            String password) {
     }
 
     public record Output(String userId) {
