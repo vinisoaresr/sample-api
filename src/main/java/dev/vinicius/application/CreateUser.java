@@ -1,6 +1,6 @@
 package dev.vinicius.application;
 
-import dev.vinicius.entity.User;
+import dev.vinicius.domain.User;
 import dev.vinicius.infra.exceptions.DocumentAlreadyExistsException;
 import dev.vinicius.infra.exceptions.EmailAlreadyExistsException;
 import jakarta.enterprise.context.ApplicationScoped;

@@ -12,12 +12,16 @@ public class GetUser {
     public Output execute(String userId) {
         var user = userRepository.findById(userId);
 
-        if (user == null) {
-            return null;
+        if (user != null) {
+            return new Output(
+                    user.getUserId(),
+                    user.getType().name().toLowerCase()
+            );
         }
 
-        return new Output(user.getUserId(), user.getType().name().toLowerCase());
+        return null;
     }
 
-    public record Output(String userId, String type) {}
+    public record Output(String userId, String userType) {
+    }
 }

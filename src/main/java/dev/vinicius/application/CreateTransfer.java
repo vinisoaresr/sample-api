@@ -1,7 +1,7 @@
 package dev.vinicius.application;
 
-import dev.vinicius.entity.Transfer;
-import dev.vinicius.entity.UserType;
+import dev.vinicius.domain.Transfer;
+import dev.vinicius.domain.UserType;
 import dev.vinicius.infra.exceptions.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -42,12 +42,14 @@ public class CreateTransfer {
             throw new UserNotFoundException("payee user not found");
         }
 
-        if (payerUser.type().equals(UserType.SHOPKEEPER.name().toLowerCase())) {
+        if (payerUser.userType().equals(UserType.SHOPKEEPER.name().toLowerCase())) {
             throw new UnauthorizedOperationException("shopkeeper can't allow to make transfers");
         }
 
-        var transfer = Transfer.create(input.payerId(), input.payeeId(), input.amount(), input.description());
+        var transfer = Transfer.create(input.payerId, input.payeeId, input.amount(), input.description());
+
         transferRepository.save(transfer);
+
         return new Output(transfer.getTransferId());
     }
 

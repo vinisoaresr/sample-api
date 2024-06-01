@@ -32,7 +32,7 @@ public class GetUserTest {
 
         Assertions.assertNotNull(user);
         Assertions.assertEquals(userId, user.userId());
-        Assertions.assertEquals("user", user.type());
+        Assertions.assertEquals("user", user.userType());
     }
 
     @Test

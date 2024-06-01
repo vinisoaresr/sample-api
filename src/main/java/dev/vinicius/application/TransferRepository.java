@@ -1,6 +1,6 @@
 package dev.vinicius.application;
 
-import dev.vinicius.entity.Transfer;
+import dev.vinicius.domain.Transfer;
 
 import java.util.List;
 

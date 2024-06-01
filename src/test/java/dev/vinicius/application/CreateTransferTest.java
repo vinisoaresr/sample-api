@@ -21,10 +21,14 @@ public class CreateTransferTest {
     @Inject
     TransferRepository transferRepository;
 
+    @Inject
+    UserRepository userRepository;
+
     @BeforeEach
     @Transactional
     void setUp() {
         transferRepository.removeAll();
+        userRepository.removeAll();
     }
 
     private String createShopkeeper() {

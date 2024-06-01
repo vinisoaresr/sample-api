@@ -17,9 +17,8 @@ dependencies {
     // Hibernate ORM specific dependencies
 
     // JDBC driver dependencies
+    implementation("io.quarkus:quarkus-agroal")
     implementation("io.quarkus:quarkus-jdbc-postgresql")
-    implementation("io.quarkus:quarkus-hibernate-orm-panache")
-
 
     // Helpers
     compileOnly 'org.projectlombok:lombok:1.18.32'

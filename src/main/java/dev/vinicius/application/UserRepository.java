@@ -1,6 +1,6 @@
 package dev.vinicius.application;
 
-import dev.vinicius.entity.User;
+import dev.vinicius.domain.User;
 
 public interface UserRepository {
     void save(User user);

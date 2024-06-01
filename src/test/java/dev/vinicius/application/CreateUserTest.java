@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import dev.vinicius.entity.User;
+import dev.vinicius.domain.User;
 import dev.vinicius.infra.exceptions.DocumentAlreadyExistsException;
 import dev.vinicius.infra.exceptions.EmailAlreadyExistsException;
 import io.quarkus.test.junit.QuarkusTest;
