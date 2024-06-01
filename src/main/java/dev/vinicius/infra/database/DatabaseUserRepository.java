@@ -18,7 +18,9 @@ public class DatabaseUserRepository implements UserRepository {
 
     @Override
     public void save(User user) {
-        try (Connection connection = dataSource.getConnection()) {
+        try {
+            var connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
             PreparedStatement statement = connection.prepareStatement("INSERT INTO \"user\" (user_id, name, email, document, password, type) VALUES (?, ?, ?, ?, ?, ?)");
             statement.setString(1, user.getUserId());
             statement.setString(2, user.getName());
@@ -35,7 +37,9 @@ public class DatabaseUserRepository implements UserRepository {
 
     @Override
     public void removeAll() {
-        try (Connection connection = dataSource.getConnection()) {
+        try {
+            var connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
             PreparedStatement statement = connection.prepareStatement("DELETE FROM \"user\"");
             statement.executeUpdate();
         } catch (SQLException e) {

@@ -48,6 +48,7 @@ public class DatabaseTransferRepository implements TransferRepository {
     public void save(Transfer transfer) {
         try {
             var connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
             var insert = "INSERT INTO transfer (transfer_id, payer_id, payee_id, amount, description, date) VALUES (?, ?, ?, ?, ?, ?)";
             var statement = connection.prepareStatement(insert);
             statement.setString(1, transfer.getTransferId());
@@ -66,6 +67,7 @@ public class DatabaseTransferRepository implements TransferRepository {
     public void removeAll() {
         try {
             var connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
             var delete = "DELETE FROM transfer";
             var statement = connection.prepareStatement(delete);
             statement.executeUpdate();

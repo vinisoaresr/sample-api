@@ -17,8 +17,10 @@ import jakarta.transaction.Transactional;
 
 @QuarkusTest
 class CreateUserTest {
+
     @Inject
     CreateUser createUser;
+
     @Inject
     UserRepository userRepository;
 
