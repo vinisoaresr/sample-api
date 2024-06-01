@@ -1,5 +1,6 @@
-package dev.vinicius.application;
+package dev.vinicius.application.usecase;
 
+import dev.vinicius.application.database.UserRepository;
 import dev.vinicius.domain.User;
 import dev.vinicius.infra.exceptions.DocumentAlreadyExistsException;
 import dev.vinicius.infra.exceptions.EmailAlreadyExistsException;

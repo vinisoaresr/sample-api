@@ -1,6 +1,10 @@
 package dev.vinicius.application;
 
-import dev.vinicius.application.CreateTransfer.Input;
+import dev.vinicius.application.database.TransferRepository;
+import dev.vinicius.application.database.UserRepository;
+import dev.vinicius.application.usecase.CreateTransfer;
+import dev.vinicius.application.usecase.CreateTransfer.Input;
+import dev.vinicius.application.usecase.CreateUser;
 import dev.vinicius.infra.exceptions.*;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;

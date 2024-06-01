@@ -1,5 +1,6 @@
-package dev.vinicius.application;
+package dev.vinicius.application.usecase;
 
+import dev.vinicius.application.database.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 

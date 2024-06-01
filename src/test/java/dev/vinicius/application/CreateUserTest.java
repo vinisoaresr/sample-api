@@ -1,7 +1,9 @@
 package dev.vinicius.application;
 
-import dev.vinicius.application.CreateUser.Input;
-import dev.vinicius.application.CreateUser.Output;
+import dev.vinicius.application.database.UserRepository;
+import dev.vinicius.application.usecase.CreateUser;
+import dev.vinicius.application.usecase.CreateUser.Input;
+import dev.vinicius.application.usecase.CreateUser.Output;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

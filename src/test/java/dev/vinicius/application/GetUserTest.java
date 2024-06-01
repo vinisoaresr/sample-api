@@ -1,5 +1,8 @@
 package dev.vinicius.application;
 
+import dev.vinicius.application.database.UserRepository;
+import dev.vinicius.application.usecase.CreateUser;
+import dev.vinicius.application.usecase.GetUser;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

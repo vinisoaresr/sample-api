@@ -1,6 +1,6 @@
-package dev.vinicius.infra.data;
+package dev.vinicius.infra.database;
 
-import dev.vinicius.application.TransferRepository;
+import dev.vinicius.application.database.TransferRepository;
 import dev.vinicius.domain.Transfer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

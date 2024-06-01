@@ -1,5 +1,6 @@
-package dev.vinicius.application;
+package dev.vinicius.application.usecase;
 
+import dev.vinicius.application.database.TransferRepository;
 import dev.vinicius.domain.Transfer;
 import dev.vinicius.domain.UserType;
 import dev.vinicius.infra.exceptions.*;

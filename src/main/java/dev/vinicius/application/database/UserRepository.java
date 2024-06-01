@@ -1,4 +1,4 @@
-package dev.vinicius.application;
+package dev.vinicius.application.database;
 
 import dev.vinicius.domain.User;
 
