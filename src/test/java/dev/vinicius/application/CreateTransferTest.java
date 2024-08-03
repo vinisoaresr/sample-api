@@ -1,7 +1,9 @@
 package dev.vinicius.application;
 
+import dev.vinicius.application.database.BalanceRepository;
 import dev.vinicius.application.database.TransferRepository;
 import dev.vinicius.application.database.UserRepository;
+import dev.vinicius.application.usecase.CreateBalance;
 import dev.vinicius.application.usecase.CreateTransfer;
 import dev.vinicius.application.usecase.CreateTransfer.Input;
 import dev.vinicius.application.usecase.CreateUser;
@@ -23,7 +25,13 @@ public class CreateTransferTest {
     CreateUser createUser;
 
     @Inject
+    CreateBalance createBalance;
+
+    @Inject
     TransferRepository transferRepository;
+
+    @Inject
+    BalanceRepository balanceRepository;
 
     @Inject
     UserRepository userRepository;
@@ -46,6 +54,9 @@ public class CreateTransferTest {
         String email = document + "@user.com";
         var payerInput = new CreateUser.Input("whatever", email, document, "user", "12345");
         var output = createUser.execute(payerInput);
+
+        var balanceInput = new CreateBalance.Input(output.userId(), 501.0);
+        createBalance.execute(balanceInput);
         return output.userId();
     }
 
@@ -143,8 +154,31 @@ public class CreateTransferTest {
         Assertions.assertEquals("shopkeeper can't allow to make transfers", exception.getMessage());
     }
 
-    // TODO:
-    // verify if user has balance to make transfer
+    @Test
+    void shouldBeThrowUnauthorizedOperationExceptionWhenPayerHasNoBalance() {
+        var payerId = createUser();
+        var payeeId = createUser();
+        var input = new Input(payerId, payeeId, "description", 1000.0);
+
+        Exception exception = Assertions.assertThrows(UnauthorizedOperationException.class, () -> createTransfer.execute(input));
+        Assertions.assertEquals("payer has no balance to make this transfer", exception.getMessage());
+    }
+
+    @Test
+    void shouldBeCreateNewBalanceWhenTransferIsCreated() {
+        var payerId = createUser(); // balance = 501.0
+        var payeeId = createUser(); // balance = 501.0
+        var input = new Input(payerId, payeeId, "description", 500.0);
+        createTransfer.execute(input);
+
+        var payerBalance = balanceRepository.findByUserId(payerId);
+        var payeeBalance = balanceRepository.findByUserId(payeeId);
+
+        Assertions.assertEquals(1.0, payerBalance.getAmount());
+        Assertions.assertEquals(1001.0, payeeBalance.getAmount());
+
+    }
+
     // verify if ExternalAuthorizationService is called with correct parameters
     // verify if ExternalAuthorizationService is called once (mock)
     // verify if transaction is rollbacked when ExternalAuthorizationService throws an exception

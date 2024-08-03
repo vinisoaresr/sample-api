@@ -1,6 +1,8 @@
 package dev.vinicius.application.usecase;
 
+import dev.vinicius.application.database.BalanceRepository;
 import dev.vinicius.application.database.TransferRepository;
+import dev.vinicius.domain.Balance;
 import dev.vinicius.domain.Transfer;
 import dev.vinicius.domain.UserType;
 import dev.vinicius.infra.exceptions.*;
@@ -17,8 +19,27 @@ public class CreateTransfer {
     @Inject
     TransferRepository transferRepository;
 
+    @Inject
+    BalanceRepository balanceRepository;
+
     @Transactional
     public Output execute(Input input) {
+        var payerBalance = balanceRepository.findByUserId(input.payerId());
+        var payeeBalance = balanceRepository.findByUserId(input.payeeId());
+
+        validate(input, payerBalance);
+
+        createNewBalance(payerBalance, payerBalance.getAmount() - input.amount());
+        createNewBalance(payeeBalance, payeeBalance.getAmount() + input.amount());
+
+        var transfer = Transfer.create(input.payerId, input.payeeId, input.amount(), input.description());
+
+        transferRepository.save(transfer);
+
+        return new Output(transfer.getTransferId());
+    }
+
+    private void validate(Input input, Balance payerBalance) {
         if (input.payerId() == null) {
             throw new IllegalArgumentException("payerId is required");
         }
@@ -47,11 +68,18 @@ public class CreateTransfer {
             throw new UnauthorizedOperationException("shopkeeper can't allow to make transfers");
         }
 
-        var transfer = Transfer.create(input.payerId, input.payeeId, input.amount(), input.description());
+        if (payerBalance == null || payerBalance.getAmount() < input.amount()) {
+            throw new UnauthorizedOperationException("payer has no balance to make this transfer");
+        }
+    }
 
-        transferRepository.save(transfer);
+    private void createNewBalance(Balance balance, double amount) {
+        var newBalance = Balance.create(
+                balance.getUserId(),
+                amount
+        );
 
-        return new Output(transfer.getTransferId());
+        balanceRepository.save(newBalance);
     }
 
     public record Input(

@@ -40,7 +40,9 @@ public class DatabaseUserRepository implements UserRepository {
         try {
             var connection = dataSource.getConnection();
             connection.setAutoCommit(false);
-            PreparedStatement statement = connection.prepareStatement("DELETE FROM \"user\"");
+            var statement = connection.prepareStatement("DELETE FROM \"balance\"");
+            statement.executeUpdate();
+            statement = connection.prepareStatement("DELETE FROM \"user\"");
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);

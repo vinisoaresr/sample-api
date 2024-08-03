@@ -1,7 +1,6 @@
 package dev.vinicius.domain;
 
 import lombok.Getter;
-
 import java.sql.Date;
 
 @Getter
@@ -11,19 +10,20 @@ public class Balance {
 
     private final String userId;
 
-    private final Date date;
+    private Date date;
 
-    private final Double balance;
+    private Double amount;
 
-    public Balance(String balanceId, String user, Date date, Double balance) {
+    public Balance(String balanceId, String userId, Date date, Double amount) {
         this.balanceId = balanceId;
-        this.userId = user;
+        this.userId = userId;
         this.date = date;
-        this.balance = balance;
+        this.amount = amount;
     }
 
     public static Balance create(String user, Double balance) {
         var uuid = java.util.UUID.randomUUID().toString();
-        return new Balance(uuid, user, new Date(System.currentTimeMillis()), balance);
+        var date = new Date(System.currentTimeMillis());
+        return new Balance(uuid, user, date, balance);
     }
 }
